@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessLayer", "DataAcce
 		{6C32CE63-EDD0-47C6-95E3-C85DF9A2B4E6} = {6C32CE63-EDD0-47C6-95E3-C85DF9A2B4E6}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreService", "StoreService\StoreService.csproj", "{2B1C05FB-15FA-4745-9411-C630AA4CF206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApp(DB)", "..\StoreApp(DB)\StoreApp(DB).csproj", "{F509D5FB-1E9D-47E5-BC64-82E08DF2A612}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,14 @@ Global
 		{BCFA397B-C984-4CCC-89F8-948F34C3B32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCFA397B-C984-4CCC-89F8-948F34C3B32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCFA397B-C984-4CCC-89F8-948F34C3B32C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B1C05FB-15FA-4745-9411-C630AA4CF206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B1C05FB-15FA-4745-9411-C630AA4CF206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B1C05FB-15FA-4745-9411-C630AA4CF206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B1C05FB-15FA-4745-9411-C630AA4CF206}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F509D5FB-1E9D-47E5-BC64-82E08DF2A612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F509D5FB-1E9D-47E5-BC64-82E08DF2A612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F509D5FB-1E9D-47E5-BC64-82E08DF2A612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F509D5FB-1E9D-47E5-BC64-82E08DF2A612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
