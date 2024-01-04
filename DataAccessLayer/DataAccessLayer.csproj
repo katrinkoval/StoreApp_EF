@@ -54,17 +54,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IStoreDBContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoreDBContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ModelsDB\ModelsDB.csproj">
-      <Project>{6c32ce63-edd0-47c6-95e3-c85df9a2b4e6}</Project>
-      <Name>ModelsDB</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Models\Models.csproj">
-      <Project>{f869ad0e-bfbc-4fbe-99c9-889f3e0a91bf}</Project>
-      <Name>Models</Name>
+    <ProjectReference Include="..\ModelsDAL\ModelsDAL.csproj">
+      <Project>{7f206249-322f-45c6-a4d7-8da85cb2bc09}</Project>
+      <Name>ModelsDAL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

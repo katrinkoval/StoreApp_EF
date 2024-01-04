@@ -1,9 +1,9 @@
-﻿using ModelsDB;
+﻿using ModelsDAL;
 using System.Data.Entity;
 
 namespace DataAccessLayer
 {
-    public class StoreDbContext : DbContext
+    public class StoreDbContext : DbContext, IStoreDBContext
     {
         //const string CONNECTION_STRING = "Data Source = localhost\\sqlexpress; Initial Catalog = Store; Integrated Security = True";
 
@@ -12,7 +12,6 @@ namespace DataAccessLayer
         {
           
         }
-
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Consignment> Consignments { get; set; }
