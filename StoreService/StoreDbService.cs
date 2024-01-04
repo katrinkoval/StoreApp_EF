@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using Models;
+using ModelsDTO;
 using DataAccessLayer;
 using StoreService.Exceptions;
 using System.Data;
+using System.Data.SqlTypes;
 
 namespace StoreService
 {
-    public class StoreDbService  : IStoreService, IDisposable
+    public class StoreDbService: IStoreService, IDisposable
     {
-        private StoreDbContext _context;       //TODO: внешняя интерфейсная ссылка
+        private IStoreDBContext _context;       //TODO: внешняя интерфейсная ссылка!!!!!
         private bool _alreadyDisposed;
 
         private const string DB_NAME = "Store";
 
-        public StoreDbService(StoreDbContext context)
+        public StoreDbService(IStoreDBContext context)
         {
             _context = context;
         }
@@ -152,7 +153,7 @@ namespace StoreService
             var consignments = from c in _context.Consignments
                                join supplier in _context.Individuals on c.SupplierID equals supplier.IPN
                                join recipient in _context.Individuals on c.RecipientID equals recipient.IPN
-                               select new Models.Consignment
+                               select new ModelsDTO.Consignment
                                {
                                    Number = c.Number,
                                    ConsignmentDate = c.ConsignmentDate,
@@ -301,13 +302,11 @@ namespace StoreService
             SqlParameter number = new SqlParameter("@Number", cons.Number);
 
             SqlParameter date = new SqlParameter("@ConsigmentDate", cons.ConsignmentDate);
-            SqlParameter supplierIPN = new SqlParameter("@SupplierID", cons.SupplierIpn);
-
-            SqlParameter recipientIPN = new SqlParameter("@RecipientID", cons.RecipientIpn);
-
+         
             if (_isUsingIPN)
             {
-               
+                SqlParameter supplierIPN = new SqlParameter("@SupplierID", cons.SupplierIpn);
+                SqlParameter recipientIPN = new SqlParameter("@RecipientID", cons.RecipientIpn);
 
                 queryStr = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate", commandText);
 
@@ -328,11 +327,14 @@ namespace StoreService
 
                 SqlParameter recipientSurname = new SqlParameter("@RecipientSurname", recipientNameParts[1]);
 
-                string queryStr1 = String.Format("Exec {0} @Number,@SupplierID, @RecipientID, @ConsigmentDate, @SupplierName, @SupplierSurname" +
+                SqlParameter supplierIPN = new SqlParameter("@SupplierID", SqlInt64.Null);
+                SqlParameter recipientIPN = new SqlParameter("@RecipientID", SqlInt64.Null);
+
+                string queryStr1 = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate, @SupplierName, @SupplierSurname" +
                                             ", @RecipientName, @RecipientSurname", commandText);
               
                 result = _context.Database
-                .ExecuteSqlCommand(queryStr1, number, DBNull.Value, DBNull.Value, date, supplierName
+                .ExecuteSqlCommand(queryStr1, number, supplierIPN, recipientIPN, date, supplierName
                                     , supplierSurname, recipientName, recipientSurname);
             }
 

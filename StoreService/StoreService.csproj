@@ -60,17 +60,17 @@
     <Compile Include="TotalPriceChangeManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ModelsDB\ModelsDB.csproj">
-      <Project>{6C32CE63-EDD0-47C6-95E3-C85DF9A2B4E6}</Project>
-      <Name>ModelsDB</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
       <Project>{bcfa397b-c984-4ccc-89f8-948f34c3b32c}</Project>
       <Name>DataAccessLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Models\Models.csproj">
-      <Project>{f869ad0e-bfbc-4fbe-99c9-889f3e0a91bf}</Project>
-      <Name>Models</Name>
+    <ProjectReference Include="..\ModelsDAL\ModelsDAL.csproj">
+      <Project>{7f206249-322f-45c6-a4d7-8da85cb2bc09}</Project>
+      <Name>ModelsDAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelsDTO\ModelsDTO.csproj">
+      <Project>{532804ff-06be-4dfa-91c4-5958ad1f03dd}</Project>
+      <Name>ModelsDTO</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
