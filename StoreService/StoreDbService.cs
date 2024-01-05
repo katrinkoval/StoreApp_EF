@@ -250,12 +250,14 @@ namespace StoreService
             SqlParameter number = new SqlParameter("@ConsigmentNumber", consNumber);
             SqlParameter productID = new SqlParameter("@ProductID", prodID);
             SqlParameter productAmount = new SqlParameter("@Amount", prodAmount);
+            SqlParameter resultParameter = new SqlParameter("@ErrorCode", SqlDbType.Int);
+            resultParameter.Direction = ParameterDirection.Output;
 
+            _context.Database
+                    .ExecuteSqlCommand("AddOrder @ConsigmentNumber, @ProductID, @Amount, @ErrorCode OUTPUT"
+                    , number, productID, productAmount, resultParameter);
 
-            int result = _context.Database
-                    .ExecuteSqlCommand("AddOrder2 @ConsigmentNumber, @ProductID, @Amount", number, productID, productAmount);
-
-            return result;
+            return (int)resultParameter.Value;
         }
 
         public int UpdateOrder(int consNum, long prodID, double amount, long prodtIDNew)
@@ -264,13 +266,15 @@ namespace StoreService
             SqlParameter productID = new SqlParameter("@ProductID", prodID);
             SqlParameter productIDUpdated = new SqlParameter("@ProductIDUpdated", prodtIDNew);
             SqlParameter productAmount = new SqlParameter("@Amount", amount);
+            SqlParameter resultParameter = new SqlParameter("@ErrorCode", SqlDbType.Int);
+            resultParameter.Direction = ParameterDirection.Output;
 
-           
-            int result = _context.Database
-                                .ExecuteSqlCommand("UpdateOrder @Number, @ProductID, @ProductIDUpdated, @Amount"
-                                                    , number, productID, productIDUpdated, productAmount);
+            _context.Database
+                    .ExecuteSqlCommand("UpdateOrder @Number, @ProductID, @ProductIDUpdated" +
+                    ", @Amount,  @ErrorCode OUTPUT", number, productID, productIDUpdated
+                    , productAmount, resultParameter);
 
-            return result;
+            return (int)resultParameter.Value;
         }
 
         public int DeleteOrder(int consNumber, long prodID)
@@ -283,8 +287,8 @@ namespace StoreService
             resultParameter.Direction = ParameterDirection.Output;
 
              _context.Database
-                                 .ExecuteSqlCommand("RemoveOrder @Number, @ProductID, @DateInterval, @ErrorStatus OUTPUT"
-                                                                    , number, productID, interval, resultParameter);
+                     .ExecuteSqlCommand("RemoveOrder @Number, @ProductID, @DateInterval, @ErrorStatus OUTPUT"
+                     , number, productID, interval, resultParameter);
 
             return (int)resultParameter.Value;
         }
@@ -297,21 +301,22 @@ namespace StoreService
         public int ProcedureExecute(bool _isUsingIPN, string commandText, Consignment cons)
         {
             string queryStr;
-            int result;
 
             SqlParameter number = new SqlParameter("@Number", cons.Number);
 
             SqlParameter date = new SqlParameter("@ConsigmentDate", cons.ConsignmentDate);
-         
+            SqlParameter resultParameter = new SqlParameter("@ErrorStatus", SqlDbType.Int);
+            resultParameter.Direction = ParameterDirection.Output;
+
             if (_isUsingIPN)
             {
                 SqlParameter supplierIPN = new SqlParameter("@SupplierID", cons.SupplierIpn);
                 SqlParameter recipientIPN = new SqlParameter("@RecipientID", cons.RecipientIpn);
 
-                queryStr = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate", commandText);
+                queryStr = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate, @ErrorStatus OUTPUT"
+                                , commandText);
 
-                result = _context.Database
-                                 .ExecuteSqlCommand(queryStr, number, supplierIPN, recipientIPN, date);
+                _context.Database.ExecuteSqlCommand(queryStr, number, supplierIPN, recipientIPN, date, resultParameter);
             }
 
             else
@@ -330,15 +335,15 @@ namespace StoreService
                 SqlParameter supplierIPN = new SqlParameter("@SupplierID", SqlInt64.Null);
                 SqlParameter recipientIPN = new SqlParameter("@RecipientID", SqlInt64.Null);
 
-                string queryStr1 = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate, @SupplierName, @SupplierSurname" +
-                                            ", @RecipientName, @RecipientSurname", commandText);
+                string queryStr1 = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate" +
+                    "                           , @SupplierName, @SupplierSurname, @RecipientName, @RecipientSurname" +
+                    "                           , @ErrorStatus OUTPUT", commandText);
               
-                result = _context.Database
-                .ExecuteSqlCommand(queryStr1, number, supplierIPN, recipientIPN, date, supplierName
-                                    , supplierSurname, recipientName, recipientSurname);
+                _context.Database.ExecuteSqlCommand(queryStr1, number, supplierIPN, recipientIPN, date, supplierName
+                                                 , supplierSurname, recipientName, recipientSurname, resultParameter);
             }
 
-            return result;
+            return (int)resultParameter.Value;
 
         }
 
