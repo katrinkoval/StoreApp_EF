@@ -12,5 +12,7 @@ namespace DataAccessLayer
         DbSet<Unit> Units { get; set; }
         DbSet<Order> Orders { get; set; }
         Database Database { get; }
+
+        int SaveChanges();
     }
 }

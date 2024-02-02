@@ -5,14 +5,14 @@ using ModelsDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Configuration;
 
 namespace StoreAppTest
 {
     [TestClass]
     class ProductOperationsTests
     {
-
-        const string CONNECTION_STRING = "Data Source = localhost\\sqlexpress; Initial Catalog = Store; Integrated Security = True";
+        readonly string CONNECTION_STRING = ConfigurationManager.ConnectionStrings["TestDBConnectionString"].ConnectionString;
 
         private StoreDbService _service;
 

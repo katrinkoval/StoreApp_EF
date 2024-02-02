@@ -18,6 +18,5 @@ namespace DataAccessLayer
         public DbSet<Individual> Individuals { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<Order> Orders { get; set; }
-
     }
 }
