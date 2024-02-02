@@ -301,52 +301,139 @@ namespace StoreService
         public int ProcedureExecute(bool _isUsingIPN, string commandText, Consignment cons)
         {
             string queryStr;
-
             SqlParameter number = new SqlParameter("@Number", cons.Number);
-
             SqlParameter date = new SqlParameter("@ConsigmentDate", cons.ConsignmentDate);
             SqlParameter resultParameter = new SqlParameter("@ErrorStatus", SqlDbType.Int);
             resultParameter.Direction = ParameterDirection.Output;
 
-            if (_isUsingIPN)
-            {
-                SqlParameter supplierIPN = new SqlParameter("@SupplierID", cons.SupplierIpn);
-                SqlParameter recipientIPN = new SqlParameter("@RecipientID", cons.RecipientIpn);
+            SqlParameter supplierIPN = (_isUsingIPN) ? new SqlParameter("@SupplierID", cons.SupplierIpn) : new SqlParameter("@SupplierID", SqlInt64.Null);
+            SqlParameter recipientIPN = (_isUsingIPN) ? new SqlParameter("@RecipientID", cons.RecipientIpn) : new SqlParameter("@RecipientID", SqlInt64.Null);
 
-                queryStr = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate, @ErrorStatus OUTPUT"
-                                , commandText);
 
-                _context.Database.ExecuteSqlCommand(queryStr, number, supplierIPN, recipientIPN, date, resultParameter);
-            }
+            string[] supplierNameParts = (_isUsingIPN) ? null : cons.SupplierName.Split(' ');
+            string[] recipientNameParts = (_isUsingIPN) ? null : cons.RecipientName.Split(' ');
 
-            else
-            {
-                string[] supplierNameParts = cons.SupplierName.Split(' ');
-                string[] recipientNameParts = cons.RecipientName.Split(' ');
 
-                SqlParameter supplierName = new SqlParameter("@SupplierName", supplierNameParts[0]);
+            SqlParameter supplierName = new SqlParameter("@SupplierName", (_isUsingIPN) ? SqlString.Null : supplierNameParts[0]);
+            SqlParameter supplierSurname = new SqlParameter("@SupplierSurname", (_isUsingIPN) ? SqlString.Null : supplierNameParts[1]);
+            SqlParameter recipientName = new SqlParameter("@RecipientName", (_isUsingIPN) ? SqlString.Null : recipientNameParts[0]);
+            SqlParameter recipientSurname = new SqlParameter("@RecipientSurname", (_isUsingIPN) ? SqlString.Null : recipientNameParts[1]);
 
-                SqlParameter supplierSurname = new SqlParameter("@SupplierSurname", supplierNameParts[1]);
+            queryStr = string.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate" +
+                                        ", @SupplierName, @SupplierSurname, @RecipientName, @RecipientSurname" +
+                                        ", @ErrorStatus OUTPUT", commandText);
 
-                SqlParameter recipientName = new SqlParameter("@RecipientName", recipientNameParts[0]);
-
-                SqlParameter recipientSurname = new SqlParameter("@RecipientSurname", recipientNameParts[1]);
-
-                SqlParameter supplierIPN = new SqlParameter("@SupplierID", SqlInt64.Null);
-                SqlParameter recipientIPN = new SqlParameter("@RecipientID", SqlInt64.Null);
-
-                string queryStr1 = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate" +
-                    "                           , @SupplierName, @SupplierSurname, @RecipientName, @RecipientSurname" +
-                    "                           , @ErrorStatus OUTPUT", commandText);
-              
-                _context.Database.ExecuteSqlCommand(queryStr1, number, supplierIPN, recipientIPN, date, supplierName
-                                                 , supplierSurname, recipientName, recipientSurname, resultParameter);
-            }
+            _context.Database.ExecuteSqlCommand(queryStr, number, supplierIPN, recipientIPN, date, supplierName, supplierSurname, recipientName, recipientSurname, resultParameter);
 
             return (int)resultParameter.Value;
-
         }
 
+        //public int ProcedureExecute(bool _isUsingIPN, string commandText, Consignment cons)
+        //{
+
+        //    SqlParameter number = new SqlParameter("@Number", cons.Number);
+
+        //    SqlParameter date = new SqlParameter("@ConsigmentDate", cons.ConsignmentDate);
+        //    SqlParameter resultParameter = new SqlParameter("@ErrorStatus", SqlDbType.Int);
+        //    resultParameter.Direction = ParameterDirection.Output;
+
+        //    if (_isUsingIPN)
+        //    {
+        //        SqlParameter supplierIPN = new SqlParameter("@SupplierID", cons.SupplierIpn);
+        //        SqlParameter recipientIPN = new SqlParameter("@RecipientID", cons.RecipientIpn);
+
+        //        SqlParameter supplierName = new SqlParameter("@SupplierName", SqlString.Null);
+
+        //        SqlParameter supplierSurname = new SqlParameter("@SupplierSurname", SqlString.Null);
+
+        //        SqlParameter recipientName = new SqlParameter("@RecipientName", SqlString.Null);
+
+        //        SqlParameter recipientSurname = new SqlParameter("@RecipientSurname", SqlString.Null);
+
+        //        string queryStr = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate" +
+        //          "                           , @SupplierName, @SupplierSurname, @RecipientName, @RecipientSurname" +
+        //          "                           , @ErrorStatus OUTPUT", commandText);
+
+        //        _context.Database.ExecuteSqlCommand(queryStr, number, supplierIPN, recipientIPN, date, supplierName
+        //                                         , supplierSurname, recipientName, recipientSurname, resultParameter);
+        //    }
+
+        //    else
+        //    {
+        //        string[] supplierNameParts = cons.SupplierName.Split(' ');
+        //        string[] recipientNameParts = cons.RecipientName.Split(' ');
+
+        //        SqlParameter supplierName = new SqlParameter("@SupplierName", supplierNameParts[0]);
+
+        //        SqlParameter supplierSurname = new SqlParameter("@SupplierSurname", supplierNameParts[1]);
+
+        //        SqlParameter recipientName = new SqlParameter("@RecipientName", recipientNameParts[0]);
+
+        //        SqlParameter recipientSurname = new SqlParameter("@RecipientSurname", recipientNameParts[1]);
+
+        //        SqlParameter supplierIPN = new SqlParameter("@SupplierID", SqlInt64.Null);
+        //        SqlParameter recipientIPN = new SqlParameter("@RecipientID", SqlInt64.Null);
+
+        //        string queryStr = String.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate" +
+        //          "                           , @SupplierName, @SupplierSurname, @RecipientName, @RecipientSurname" +
+        //          "                           , @ErrorStatus OUTPUT", commandText);
+
+        //        _context.Database.ExecuteSqlCommand(queryStr, number, supplierIPN, recipientIPN, date, supplierName
+        //                                         , supplierSurname, recipientName, recipientSurname, resultParameter);
+
+        //    }
+
+        //    return (int)resultParameter.Value;
+        //}
+
+
+        //public int ProcedureExecute(bool _isUsingIPN, string commandText, Consignment cons)
+        //{
+        //    string queryStr;
+        //    SqlParameter number = new SqlParameter("@Number", cons.Number);
+        //    SqlParameter date = new SqlParameter("@ConsigmentDate", cons.ConsignmentDate);
+        //    SqlParameter resultParameter = new SqlParameter("@ErrorStatus", SqlDbType.Int);
+        //    resultParameter.Direction = ParameterDirection.Output;
+
+        //    SqlParameter supplierIPN;
+        //    SqlParameter recipientIPN;
+        //    SqlParameter supplierName;
+        //    SqlParameter supplierSurname;
+        //    SqlParameter recipientName;
+        //    SqlParameter recipientSurname;
+
+        //    if (_isUsingIPN)
+        //    {
+        //        supplierIPN = new SqlParameter("@SupplierID", cons.SupplierIpn);
+        //        recipientIPN = new SqlParameter("@RecipientID", cons.RecipientIpn);
+
+        //        supplierName = new SqlParameter("@SupplierName", SqlString.Null);
+        //        supplierSurname = new SqlParameter("@SupplierSurname", SqlString.Null);
+        //        recipientName = new SqlParameter("@RecipientName", SqlString.Null);
+        //        recipientSurname = new SqlParameter("@RecipientSurname", SqlString.Null);
+        //    }
+        //    else
+        //    {
+        //        string[] supplierNameParts = cons.SupplierName.Split(' ');
+        //        string[] recipientNameParts = cons.RecipientName.Split(' ');
+
+        //        supplierIPN = new SqlParameter("@SupplierID", SqlInt64.Null);
+        //        recipientIPN = new SqlParameter("@RecipientID", SqlInt64.Null);
+
+        //        supplierName = new SqlParameter("@SupplierName", supplierNameParts[0]);
+        //        supplierSurname = new SqlParameter("@SupplierSurname", supplierNameParts[1]);
+        //        recipientName = new SqlParameter("@RecipientName", recipientNameParts[0]);
+        //        recipientSurname = new SqlParameter("@RecipientSurname", recipientNameParts[1]);
+        //    }
+
+        //    queryStr = string.Format("Exec {0} @Number, @SupplierID, @RecipientID, @ConsigmentDate" +
+        //                                ", @SupplierName, @SupplierSurname, @RecipientName, @RecipientSurname" +
+        //                                ", @ErrorStatus OUTPUT", commandText);
+
+        //    _context.Database.ExecuteSqlCommand(queryStr, number, supplierIPN, recipientIPN, date, supplierName, supplierSurname, recipientName, recipientSurname, resultParameter);
+
+        //    return (int)resultParameter.Value;
+        //}
 
         public int DeleteConsignment(int consNumber)
         {
